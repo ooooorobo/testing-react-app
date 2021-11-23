@@ -295,4 +295,50 @@ expect(helloText.textContent).toBe("Hello!");
 
 ## Methods to select elements
 
+- `getBy...` - 찾는 element가 DOM Tree에 없으면 에러를 던진다.
+- `queryBy...` - 찾는 element가 없으면 null을 반환
+- `findBy...` - Promise를 반환하므로, 비동기로 사용 가능. element가 render될 때까지 기다린다.
+  - element render가 오래 걸릴 경우 사용 가능. 기본 1000ms동안 요소를 찾지 못하면 에러를 던진다.
+- `...AllBy...` - 해당하는 모든 element를 찾는다.
+  - AllBy가 아닌 메소드에서 여러 개의 element를 찾으면 에러를 던진다.
+  - getAllBy, findAllBy도 해당하는 element가 하나도 없다면 에러를 던진다.
+  - queryAllBy는 element가 없다면 빈 배열을 반환한다.
+- `getByTestId` - 컴포넌트에 `data-testid` prop을 주고, 이 값으로 getByTestId를 호출할 수 있다.
+
 ## Fire event
+
+- UI 인터랙션을 테스트하기 위해 이벤트를 호출할 수 있다. `fireEvent`
+```js
+    let myBtn = getByRole('button');
+    fireEvent.click(myBtn);
+```
+
+
+결과
+```
+  console.log
+    누름
+
+      at onClick (src/components/Hello.js:7:58)
+```
+
+## Changing State
+
+- 'text' 타입의 Input 태그는 input role이 아니라 textbox role을 가진다.
+```
+textbox:
+      Name "":
+      <input
+        type="text"
+        value=""
+      />
+
+```
+
+- fireEvent를 사용해, 이벤트 발생에 따른 상태 변화를 테스트할 수 있다. 
+```js
+    let myInput = getByRole('textbox')
+    expect(myInput).toHaveValue('')
+    fireEvent.change(myInput, {target: {value: "ooooo"}});
+    expect(myInput).toHaveValue('ooooo')
+```
